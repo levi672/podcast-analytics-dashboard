@@ -1,0 +1,17 @@
+{
+  "period": {
+    "start": "2026-02-21",
+    "end": "2026-03-23"
+  },
+  "summary": {
+    "followers": 0,
+    "views_total": 0,
+    "videos_count": 0
+  },
+  "profile": {
+    "username": "meujota",
+    "nickname": "Jota"
+  },
+  "videos": [],
+  "error": "Token do Apify expirado ou sem permissão"
+}
