@@ -23,12 +23,11 @@ export default function SpotifyPage() {
   }
 
   const filteredDaily = filterByDays(data.daily || [], 'date')
-  const filteredEpisodes = filterByDays(data.episodes || [], 'published_at')
 
   const episodeColumns = [
-    { key: 'name', label: 'Episódio', render: (v: string) => <span className="text-white">{v?.slice(0, 40)}...</span> },
+    { key: 'title', label: 'Episódio', render: (v: string) => <span className="text-white">{v?.length > 40 ? v.slice(0, 40) + '...' : v}</span> },
     { key: 'streams', label: 'Streams', render: (v: number) => v?.toLocaleString('pt-BR') || '—' },
-    { key: 'listeners', label: 'Ouvintes', render: () => '—' },
+    { key: 'starts', label: 'Ouvintes', render: (v: number) => v?.toLocaleString('pt-BR') || '—' },
     { key: 'published_at', label: 'Publicado', render: (v: string) => v ? new Date(v).toLocaleDateString('pt-BR') : '—' },
   ]
 
@@ -69,12 +68,12 @@ export default function SpotifyPage() {
         />
         <StatCard
           title="Total de Episódios"
-          value={data.summary?.episodes_count || data.episodes?.length || 0}
+          value={data.summary?.total_episodes || data.episodes?.length || 0}
           icon={<span className="text-gray-500">🎙</span>}
         />
         <StatCard
           title="Streams no Período"
-          value={data.summary?.streams_total || 0}
+          value={data.summary?.streams_period || 0}
           subtitle="streams"
           icon={<span className="text-gray-500">🎧</span>}
           color="text-[#1DB954]"
