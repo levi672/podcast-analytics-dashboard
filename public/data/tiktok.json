@@ -5,10 +5,7 @@
   },
   "summary": {
     "followers": 0,
-    "total_likes": 0,
-    "views_period": 0,
-    "likes_period": 0
+    "views_total": 0
   },
-  "videos": [],
-  "top_videos": []
+  "videos": []
 }

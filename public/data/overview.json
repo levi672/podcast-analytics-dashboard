@@ -5,24 +5,18 @@
   },
   "platforms": {
     "spotify": {
-      "followers": 64,
-      "total_episodes": 4,
-      "streams_period": 430
+      "followers": 64
     },
     "youtube": {
       "subscribers": 847,
-      "total_videos": 97,
-      "views_period": 0
+      "views_total": 21725648
     },
     "instagram": {
-      "followers": 55852,
-      "posts_count": 198,
-      "views_period": 33836
+      "followers": 55854
     },
     "tiktok": {
-      "followers": 0,
-      "total_likes": 0,
-      "views_period": 0
+      "followers": 0
     }
-  }
+  },
+  "last_updated": "2026-03-24T00:56:51.284124"
 }
