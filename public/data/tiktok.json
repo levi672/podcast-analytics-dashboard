@@ -5,13 +5,10 @@
   },
   "summary": {
     "followers": 0,
-    "views_total": 0,
-    "videos_count": 0
-  },
-  "profile": {
-    "username": "meujota",
-    "nickname": "Jota"
+    "total_likes": 0,
+    "views_period": 0,
+    "likes_period": 0
   },
   "videos": [],
-  "error": "API error: 403"
+  "top_videos": []
 }

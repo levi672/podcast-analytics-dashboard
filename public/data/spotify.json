@@ -4,10 +4,242 @@
     "end": "2026-03-24"
   },
   "summary": {
-    "followers": 0,
-    "streams_total": 0,
-    "episodes_count": 0
+    "followers": 64,
+    "total_episodes": 4,
+    "streams_period": 430
   },
-  "episodes": [],
-  "daily": []
+  "daily": [
+    {
+      "date": "2026-02-22",
+      "streams": 14,
+      "starts": 82,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-02-23",
+      "streams": 18,
+      "starts": 75,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-02-24",
+      "streams": 23,
+      "starts": 79,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-02-25",
+      "streams": 16,
+      "starts": 60,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-02-26",
+      "streams": 12,
+      "starts": 61,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-02-27",
+      "streams": 18,
+      "starts": 49,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-02-28",
+      "streams": 5,
+      "starts": 34,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-01",
+      "streams": 2,
+      "starts": 5,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-02",
+      "streams": 4,
+      "starts": 9,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-03",
+      "streams": 6,
+      "starts": 8,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-04",
+      "streams": 5,
+      "starts": 8,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-05",
+      "streams": 10,
+      "starts": 34,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-06",
+      "streams": 15,
+      "starts": 44,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-07",
+      "streams": 18,
+      "starts": 56,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-08",
+      "streams": 13,
+      "starts": 54,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-09",
+      "streams": 18,
+      "starts": 60,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-10",
+      "streams": 16,
+      "starts": 57,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-11",
+      "streams": 12,
+      "starts": 38,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-12",
+      "streams": 35,
+      "starts": 72,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-13",
+      "streams": 21,
+      "starts": 60,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-14",
+      "streams": 11,
+      "starts": 57,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-15",
+      "streams": 13,
+      "starts": 65,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-16",
+      "streams": 11,
+      "starts": 51,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-17",
+      "streams": 26,
+      "starts": 73,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-18",
+      "streams": 19,
+      "starts": 55,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-19",
+      "streams": 13,
+      "starts": 38,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-20",
+      "streams": 16,
+      "starts": 48,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-21",
+      "streams": 16,
+      "starts": 53,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-22",
+      "streams": 16,
+      "starts": 58,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-23",
+      "streams": 7,
+      "starts": 35,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "date": "2026-03-24",
+      "streams": 1,
+      "starts": 2,
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    }
+  ],
+  "episodes": [
+    {
+      "id": "5KapgFj550QMnFKnZCCuCc",
+      "title": "O poder do básico no seu negócio, com Mauro D'ancona",
+      "published_at": "2026-02-25",
+      "duration_ms": 1539264,
+      "streams": 668,
+      "starts": 2202,
+      "url": "https://open.spotify.com/episode/5KapgFj550QMnFKnZCCuCc",
+      "description": "Você consegue explicar seu negócio em 30 segundos? Se precisa de cinco minutos, talvez ainda não esteja tão claro quanto parece.Outra parte da conversa vai direto ao ponto: enquanto muita gente monta relatórios enormes para provar o resultado, existe uma métrica que não aceita maquiagem, o caixa. Es",
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "id": "5fzBpuFXTPvCvRSEt5lw2t",
+      "title": "Como pensar grande mesmo com um negócio pequeno - com Luiz Manzano da BigBets",
+      "published_at": "2026-03-11",
+      "duration_ms": 3040874,
+      "streams": 668,
+      "starts": 2202,
+      "url": "https://open.spotify.com/episode/5fzBpuFXTPvCvRSEt5lw2t",
+      "description": "Você já parou na porta de um concorrente cheio de fila e se perguntou o que ele está fazendo que você não faz? O Manza passa a vida inteira fazendo exatamente isso, só que com uma visão treinada para enxergar o que a maioria não vê. Nesse episódio ele conta como começou do zero, sem dinheiro, pedind",
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "id": "64syq8cPwhFm0fCN2XqFLG",
+      "title": "O que faz um negócio funcionar, com Bebeto da Segura",
+      "published_at": "2026-01-28",
+      "duration_ms": 2238165,
+      "streams": 668,
+      "starts": 2202,
+      "url": "https://open.spotify.com/episode/64syq8cPwhFm0fCN2XqFLG",
+      "description": "Empreender na vida real é resolver problema o tempo inteiro e não fugir das dores difíceis.Neste episódio do No Corre com Jota, Luis Alberto Nogueira, CEO e cofundador da Segura, compartilha aprendizados práticos pra quem vive o corre de empreender. A conversa passa pela importância de pensar consta",
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    },
+    {
+      "id": "6s2n3b9COE5KKYF4RujuWp",
+      "title": "De executivo a empreendedor: o lado que ninguém mostra",
+      "published_at": "2026-02-11",
+      "duration_ms": 3255424,
+      "streams": 668,
+      "starts": 2202,
+      "url": "https://open.spotify.com/episode/6s2n3b9COE5KKYF4RujuWp",
+      "description": "Neste episódio, conversamos com Luiz Capelati, empreendedor e sócio da Clube Santuu, uma empresa que nasceu da união entre paixão pelo ciclismo e uma dor real do mercado. Mais do que uma história de negócios, este é um episódio sobre disciplina, pressão, resiliência e a realidade pouco romantizada d",
+      "collected_at": "2026-03-24T00:52:43.070994+00:00"
+    }
+  ]
 }
