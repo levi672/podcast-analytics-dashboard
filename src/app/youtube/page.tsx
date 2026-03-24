@@ -29,10 +29,15 @@ export default function YouTubePage() {
   }
 
   const filteredVideos = filterByDays(data.videos || [], 'published_at')
-  const filteredDaily = filterByDays(data.daily || [], 'date')
+
+  const videosWithUrl = (data.videos || [])
+    .map((v: any) => ({ ...v, url: `https://youtube.com/watch?v=${v.id}` }))
+    .sort((a: any, b: any) => b.views - a.views)
+
+  const filteredVideosWithUrl = filterByDays(videosWithUrl, 'published_at')
 
   const videoColumns = [
-    { key: 'title', label: 'Vídeo', render: (v: string) => <span className="text-white">{v?.slice(0, 40)}...</span> },
+    { key: 'title', label: 'Vídeo', render: (v: string) => <span className="text-white">{v?.length > 40 ? v.slice(0, 40) + '...' : v}</span> },
     { key: 'views', label: 'Views', render: (v: number) => formatNumber(v) },
     { key: 'likes', label: 'Likes', render: (v: number) => formatNumber(v) },
     { key: 'comments', label: 'Comentários', render: (v: number) => v || 0 },
@@ -90,7 +95,7 @@ export default function YouTubePage() {
       <div className="grid grid-cols-1 gap-4 mb-6">
         <ChartCard
           title="Views por Vídeo"
-          data={filteredVideos.slice(0, 10).map((v: any) => ({ date: v.title?.slice(0, 20) + '...', value: v.views })) || []}
+          data={filteredVideos.slice(0, 10).map((v: any) => ({ date: v.published_at?.slice(0, 10), value: v.views })) || []}
           color="#FF0000"
         />
       </div>
@@ -99,7 +104,7 @@ export default function YouTubePage() {
       <DataTable
         title="Vídeos — Top por Views"
         columns={videoColumns}
-        data={(data.videos || []).sort((a: any, b: any) => b.views - a.views)}
+        data={filteredVideosWithUrl}
       />
     </div>
   )
