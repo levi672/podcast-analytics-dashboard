@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useData } from '@/hooks/useData'
 import StatCard from '@/components/StatCard'
 import ChartCard from '@/components/ChartCard'
@@ -8,6 +9,7 @@ import Loading from '@/components/Loading'
 
 export default function InstagramPage() {
   const { data, loading } = useData<any>('instagram.json')
+  const [selectedDays, setSelectedDays] = useState(30)
 
   if (loading || !data) return <Loading />
 
@@ -19,8 +21,16 @@ export default function InstagramPage() {
     return n?.toLocaleString('pt-BR') || '0'
   }
 
-  const totalLikes = data.posts?.reduce((sum: number, p: any) => sum + (p.like_count || 0), 0) || 0
-  const totalViews = data.posts?.reduce((sum: number, p: any) => sum + (p.play_count || p.like_count * 100 || 0), 0) || 0
+  const filterByDays = (items: any[], dateKey: string) => {
+    if (!items?.length) return items
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - selectedDays)
+    return items.filter(item => new Date(item[dateKey]) >= cutoff)
+  }
+
+  const filteredPosts = filterByDays(data.posts || [], 'timestamp')
+  const totalLikes = filteredPosts.reduce((sum: number, p: any) => sum + (p.like_count || 0), 0) || 0
+  const totalViews = filteredPosts.reduce((sum: number, p: any) => sum + (p.play_count || p.like_count * 100 || 0), 0) || 0
 
   const postColumns = [
     { key: 'caption', label: 'Post', render: (v: string) => <span className="text-white">{v?.slice(0, 40) || 'Sem legenda'}...</span> },
@@ -31,8 +41,7 @@ export default function InstagramPage() {
     { key: 'timestamp', label: 'Publicado', render: (v: string) => v ? new Date(v).toLocaleDateString('pt-BR') : '—' },
   ]
 
-  // Chart data for top posts
-  const topPostsData = data.posts?.slice(0, 10).map((p: any, i: number) => ({
+  const topPostsData = filteredPosts.slice(0, 10).map((p: any, i: number) => ({
     date: `${i + 1}`,
     value: p.like_count * 100 || 0
   })) || []
@@ -51,9 +60,15 @@ export default function InstagramPage() {
         <div className="flex items-center gap-2 text-xs">
           <span className="text-gray-500">📅 {period.start} – {period.end}</span>
           <div className="flex gap-1 ml-4">
-            <button className="px-3 py-1 rounded bg-[#1a1a24] text-gray-400">7 dias</button>
-            <button className="px-3 py-1 rounded bg-purple-600 text-white">30 dias</button>
-            <button className="px-3 py-1 rounded bg-[#1a1a24] text-gray-400">90 dias</button>
+            {[7, 30, 90].map(days => (
+              <button
+                key={days}
+                onClick={() => setSelectedDays(days)}
+                className={`px-3 py-1 rounded ${selectedDays === days ? 'bg-purple-600 text-white' : 'bg-[#1a1a24] text-gray-400 hover:bg-[#2a2a34]'}`}
+              >
+                {days} dias
+              </button>
+            ))}
           </div>
         </div>
       </div>
@@ -103,7 +118,7 @@ export default function InstagramPage() {
       <DataTable
         title="Posts e Reels no Período"
         columns={postColumns}
-        data={data.posts || []}
+        data={filteredPosts}
       />
     </div>
   )

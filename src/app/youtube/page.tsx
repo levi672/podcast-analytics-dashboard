@@ -1,5 +1,6 @@
 'use client'
 
+import { useState } from 'react'
 import { useData } from '@/hooks/useData'
 import StatCard from '@/components/StatCard'
 import ChartCard from '@/components/ChartCard'
@@ -8,6 +9,7 @@ import Loading from '@/components/Loading'
 
 export default function YouTubePage() {
   const { data, loading } = useData<any>('youtube.json')
+  const [selectedDays, setSelectedDays] = useState(30)
 
   if (loading || !data) return <Loading />
 
@@ -18,6 +20,16 @@ export default function YouTubePage() {
     if (n >= 1000) return `${(n / 1000).toFixed(1)}K`
     return n?.toLocaleString('pt-BR') || '0'
   }
+
+  const filterByDays = (items: any[], dateKey: string) => {
+    if (!items?.length) return items
+    const cutoff = new Date()
+    cutoff.setDate(cutoff.getDate() - selectedDays)
+    return items.filter(item => new Date(item[dateKey]) >= cutoff)
+  }
+
+  const filteredVideos = filterByDays(data.videos || [], 'published_at')
+  const filteredDaily = filterByDays(data.daily || [], 'date')
 
   const videoColumns = [
     { key: 'title', label: 'Vídeo', render: (v: string) => <span className="text-white">{v?.slice(0, 40)}...</span> },
@@ -41,15 +53,21 @@ export default function YouTubePage() {
         <div className="flex items-center gap-2 text-xs">
           <span className="text-gray-500">📅 {period.start} – {period.end}</span>
           <div className="flex gap-1 ml-4">
-            <button className="px-3 py-1 rounded bg-[#1a1a24] text-gray-400">7 dias</button>
-            <button className="px-3 py-1 rounded bg-purple-600 text-white">30 dias</button>
-            <button className="px-3 py-1 rounded bg-[#1a1a24] text-gray-400">90 dias</button>
+            {[7, 30, 90].map(days => (
+              <button
+                key={days}
+                onClick={() => setSelectedDays(days)}
+                className={`px-3 py-1 rounded ${selectedDays === days ? 'bg-purple-600 text-white' : 'bg-[#1a1a24] text-gray-400 hover:bg-[#2a2a34]'}`}
+              >
+                {days} dias
+              </button>
+            ))}
           </div>
         </div>
       </div>
 
       {/* Stats */}
-      <div className="grid grid-cols-4 gap-4 mb-6">
+      <div className="grid grid-cols-3 gap-4 mb-6">
         <StatCard
           title="Inscritos"
           value={data.summary?.subscribers || 0}
@@ -57,33 +75,22 @@ export default function YouTubePage() {
           color="text-[#FF0000]"
         />
         <StatCard
-          title="Views no Período"
-          value={data.summary?.views_total || 0}
+          title="Views Total"
+          value={formatNumber(data.summary?.views_total || 0)}
           icon={<span className="text-gray-500">👁</span>}
         />
         <StatCard
-          title="Horas Assistidas"
-          value="0h"
-          icon={<span className="text-gray-500">⏱</span>}
-        />
-        <StatCard
-          title="Novos Inscritos"
-          value={0}
-          subtitle="no período"
-          icon={<span className="text-gray-500">👥</span>}
+          title="Total de Vídeos"
+          value={data.summary?.total_videos || 0}
+          icon={<span className="text-gray-500">🎬</span>}
         />
       </div>
 
       {/* Charts */}
-      <div className="grid grid-cols-2 gap-4 mb-6">
+      <div className="grid grid-cols-1 gap-4 mb-6">
         <ChartCard
-          title="Views Diárias"
-          data={data.daily?.map((d: any) => ({ date: d.date, value: d.views })) || []}
-          color="#FF0000"
-        />
-        <ChartCard
-          title="Watch Time (minutos/dia)"
-          data={[]}
+          title="Views por Vídeo"
+          data={filteredVideos.slice(0, 10).map((v: any) => ({ date: v.title?.slice(0, 20) + '...', value: v.views })) || []}
           color="#FF0000"
         />
       </div>
@@ -92,7 +99,7 @@ export default function YouTubePage() {
       <DataTable
         title="Vídeos — Top por Views"
         columns={videoColumns}
-        data={data.videos || []}
+        data={(data.videos || []).sort((a: any, b: any) => b.views - a.views)}
       />
     </div>
   )
