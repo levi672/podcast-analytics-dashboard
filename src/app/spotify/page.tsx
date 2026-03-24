@@ -23,6 +23,7 @@ export default function SpotifyPage() {
   }
 
   const filteredDaily = filterByDays(data.daily || [], 'date')
+  const streamsInPeriod = filteredDaily.reduce((sum: number, d: any) => sum + (d.streams || 0), 0)
 
   const episodeColumns = [
     { key: 'title', label: 'Episódio', render: (v: string) => <span className="text-white">{v?.length > 40 ? v.slice(0, 40) + '...' : v}</span> },
@@ -73,7 +74,7 @@ export default function SpotifyPage() {
         />
         <StatCard
           title="Streams no Período"
-          value={data.summary?.streams_period || 0}
+          value={streamsInPeriod}
           subtitle="streams"
           icon={<span className="text-gray-500">🎧</span>}
           color="text-[#1DB954]"
