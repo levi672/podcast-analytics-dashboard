@@ -2,90 +2,109 @@
 
 import { useData } from '@/hooks/useData'
 import StatCard from '@/components/StatCard'
+import ChartCard from '@/components/ChartCard'
+import DataTable from '@/components/DataTable'
 import Loading from '@/components/Loading'
 
-interface InstagramData {
-  period: { start: string; end: string }
-  summary: {
-    followers: number
-    posts_count: number
-    engagement_total: number
-  }
-  profile: {
-    username: string
-    name: string
-  }
-  posts: Array<{
-    id: string
-    caption: string
-    media_type: string
-    like_count: number
-    comments_count: number
-    timestamp: string
-    permalink: string
-  }>
-}
-
 export default function InstagramPage() {
-  const { data, loading, error } = useData<InstagramData>('instagram.json')
+  const { data, loading } = useData<any>('instagram.json')
 
-  if (loading) return <Loading />
-  if (error) return <div className="text-red-500">Erro: {error}</div>
-  if (!data) return null
+  if (loading || !data) return <Loading />
+
+  const period = data.period || { start: '', end: '' }
+
+  const formatNumber = (n: number) => {
+    if (n >= 1000000) return `${(n / 1000000).toFixed(1)}M`
+    if (n >= 1000) return `${(n / 1000).toFixed(1)}K`
+    return n?.toLocaleString('pt-BR') || '0'
+  }
+
+  const totalLikes = data.posts?.reduce((sum: number, p: any) => sum + (p.like_count || 0), 0) || 0
+  const totalViews = data.posts?.reduce((sum: number, p: any) => sum + (p.play_count || p.like_count * 100 || 0), 0) || 0
+
+  const postColumns = [
+    { key: 'caption', label: 'Post', render: (v: string) => <span className="text-white">{v?.slice(0, 40) || 'Sem legenda'}...</span> },
+    { key: 'media_type', label: 'Tipo', render: (v: string) => v?.toLowerCase() === 'video' ? 'reel' : v?.toLowerCase() || 'post' },
+    { key: 'play_count', label: 'Views', render: (v: number, row: any) => formatNumber(v || row.like_count * 100 || 0) },
+    { key: 'like_count', label: 'Likes', render: (v: number) => formatNumber(v || 0) },
+    { key: 'comments_count', label: 'Comentários', render: (v: number) => v || 0 },
+    { key: 'timestamp', label: 'Publicado', render: (v: string) => v ? new Date(v).toLocaleDateString('pt-BR') : '—' },
+  ]
+
+  // Chart data for top posts
+  const topPostsData = data.posts?.slice(0, 10).map((p: any, i: number) => ({
+    date: `${i + 1}`,
+    value: p.like_count * 100 || 0
+  })) || []
 
   return (
     <div>
-      <div className="flex items-center gap-3 mb-8">
-        <span className="text-3xl">📸</span>
-        <div>
-          <h1 className="text-2xl font-bold text-instagram">Instagram</h1>
-          <p className="text-dark-muted text-sm">
-            @{data.profile?.username || 'meujota'} • {data.period.start} - {data.period.end}
-          </p>
+      {/* Header */}
+      <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center gap-3">
+          <span className="text-2xl">📷</span>
+          <div>
+            <h1 className="text-xl font-semibold text-[#E4405F]">Instagram</h1>
+            <p className="text-gray-500 text-xs">@{data.profile?.username || 'meujota'}</p>
+          </div>
+        </div>
+        <div className="flex items-center gap-2 text-xs">
+          <span className="text-gray-500">📅 {period.start} – {period.end}</span>
+          <div className="flex gap-1 ml-4">
+            <button className="px-3 py-1 rounded bg-[#1a1a24] text-gray-400">7 dias</button>
+            <button className="px-3 py-1 rounded bg-purple-600 text-white">30 dias</button>
+            <button className="px-3 py-1 rounded bg-[#1a1a24] text-gray-400">90 dias</button>
+          </div>
         </div>
       </div>
 
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+      {/* Stats */}
+      <div className="grid grid-cols-4 gap-4 mb-6">
         <StatCard
           title="Seguidores"
-          value={data.summary.followers}
-          color="text-instagram"
+          value={data.summary?.followers || 0}
+          icon={<span className="text-gray-500">👥</span>}
+          color="text-[#E4405F]"
         />
         <StatCard
-          title="Posts"
-          value={data.summary.posts_count}
+          title="Total de Posts"
+          value={data.summary?.posts_count || 0}
+          icon={<span className="text-gray-500">📷</span>}
         />
         <StatCard
-          title="Engajamento Total"
-          value={data.summary.engagement_total || 0}
+          title="Views no Período"
+          value={totalViews}
+          subtitle="reels e posts"
+          icon={<span className="text-gray-500">👁</span>}
+        />
+        <StatCard
+          title="Likes no Período"
+          value={totalLikes}
+          icon={<span className="text-gray-500">❤️</span>}
         />
       </div>
 
-      <div className="bg-dark-card border border-dark-border rounded-xl p-6">
-        <h2 className="text-lg font-semibold mb-4">Posts Recentes</h2>
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          {data.posts?.slice(0, 10).map((post) => (
-            <div key={post.id} className="border border-dark-border rounded-lg p-4">
-              <p className="text-sm mb-2 line-clamp-2">
-                {post.caption?.slice(0, 100) || 'Sem legenda'}...
-              </p>
-              <div className="flex items-center gap-4 text-sm text-dark-muted">
-                <span>❤️ {post.like_count?.toLocaleString('pt-BR')}</span>
-                <span>💬 {post.comments_count}</span>
-                <span>{new Date(post.timestamp).toLocaleDateString('pt-BR')}</span>
-              </div>
-              <a 
-                href={post.permalink} 
-                target="_blank" 
-                rel="noopener noreferrer"
-                className="text-instagram text-sm mt-2 inline-block hover:underline"
-              >
-                Ver post →
-              </a>
-            </div>
-          ))}
-        </div>
+      {/* Charts */}
+      <div className="grid grid-cols-2 gap-4 mb-6">
+        <ChartCard
+          title="Evolução de Seguidores"
+          data={[]}
+          color="#E4405F"
+        />
+        <ChartCard
+          title="Top 10 Posts — Views"
+          data={topPostsData}
+          color="#E4405F"
+          type="line"
+        />
       </div>
+
+      {/* Posts Table */}
+      <DataTable
+        title="Posts e Reels no Período"
+        columns={postColumns}
+        data={data.posts || []}
+      />
     </div>
   )
 }

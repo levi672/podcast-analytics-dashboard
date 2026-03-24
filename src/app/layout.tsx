@@ -17,10 +17,10 @@ export default function RootLayout({
 }) {
   return (
     <html lang="pt-BR">
-      <body className={inter.className}>
+      <body className={`${inter.className} bg-[#0a0a0f] text-white antialiased`}>
         <div className="flex min-h-screen">
           <Sidebar />
-          <main className="flex-1 p-8 ml-64">
+          <main className="flex-1 p-6 ml-56">
             {children}
           </main>
         </div>

@@ -2,24 +2,41 @@
 @tailwind components;
 @tailwind utilities;
 
+* {
+  box-sizing: border-box;
+}
+
 body {
   background-color: #0a0a0f;
   color: #e4e4e7;
+  min-height: 100vh;
 }
 
 ::-webkit-scrollbar {
-  width: 8px;
+  width: 6px;
+  height: 6px;
 }
 
 ::-webkit-scrollbar-track {
-  background: #12121a;
+  background: #0d0d12;
 }
 
 ::-webkit-scrollbar-thumb {
   background: #2e2e3e;
-  border-radius: 4px;
+  border-radius: 3px;
 }
 
 ::-webkit-scrollbar-thumb:hover {
   background: #3e3e4e;
 }
+
+/* Custom colors */
+.text-spotify { color: #1DB954; }
+.text-youtube { color: #FF0000; }
+.text-instagram { color: #E4405F; }
+.text-tiktok { color: #00F2EA; }
+
+.bg-spotify { background-color: #1DB954; }
+.bg-youtube { background-color: #FF0000; }
+.bg-instagram { background-color: #E4405F; }
+.bg-tiktok { background-color: #00F2EA; }
