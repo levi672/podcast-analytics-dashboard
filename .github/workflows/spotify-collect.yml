@@ -1,0 +1,171 @@
+name: Coleta Spotify
+
+on:
+  schedule:
+    - cron: "0 9 * * *"   # todo dia às 09:00 UTC (06:00 Brasília)
+  workflow_dispatch:       # permite rodar manualmente pelo GitHub
+
+jobs:
+  collect:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Instalar dependências
+        run: pip install requests
+
+      - name: Coletar Spotify
+        env:
+          SPOTIFY_SP_DC: ${{ secrets.SPOTIFY_SP_DC }}
+        run: |
+          python - <<'EOF'
+          import requests, json, os
+          from datetime import datetime, date, timedelta
+
+          SPOTIFY_SP_DC   = os.environ["SPOTIFY_SP_DC"]
+          SPOTIFY_SHOW_ID = "6V7SrFErZ76sj4bKp9q5Ue"
+          period_start    = (date.today() - timedelta(days=30)).isoformat()
+          period_end      = date.today().isoformat()
+
+          # Token
+          token_resp = requests.get(
+              "https://open.spotify.com/get_access_token",
+              params={"reason": "transport", "productType": "web_player"},
+              headers={
+                  "Cookie": f"sp_dc={SPOTIFY_SP_DC}",
+                  "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36"
+              },
+              timeout=15
+          )
+          print(f"Token HTTP: {token_resp.status_code}")
+          if not token_resp.ok:
+              raise Exception(f"Erro {token_resp.status_code}: {token_resp.text[:300]}")
+
+          td = token_resp.json()
+          if td.get("isAnonymous"):
+              raise Exception("sp_dc expirado — atualize o secret SPOTIFY_SP_DC no GitHub")
+
+          access_token = td["accessToken"]
+          print("Token OK")
+
+          sp_headers = {
+              "Authorization": f"Bearer {access_token}",
+              "Accept": "application/json",
+              "User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36"
+          }
+          BASE = "https://generic.wg.spotify.com/podcasters/v1"
+
+          # Seguidores
+          followers = 0
+          r = requests.get(f"{BASE}/shows/{SPOTIFY_SHOW_ID}", headers=sp_headers, timeout=15)
+          if r.ok:
+              followers = r.json().get("followerCount", 0)
+          print(f"Seguidores: {followers}")
+
+          # Episódios
+          r = requests.get(f"{BASE}/shows/{SPOTIFY_SHOW_ID}/episodes", headers=sp_headers, params={"start": 0, "limit": 50}, timeout=15)
+          episodes_raw = r.json().get("episodes", []) if r.ok else []
+          print(f"Episódios: {len(episodes_raw)}")
+
+          # Streaming detalhado
+          r = requests.get(
+              f"{BASE}/shows/{SPOTIFY_SHOW_ID}/detailedStreamingActivity",
+              headers=sp_headers,
+              params={"start": period_start, "end": period_end},
+              timeout=15
+          )
+          ep_streams, daily_dict = {}, {}
+          if r.ok:
+              for entry in r.json().get("activityPeriod", []):
+                  ep_id = entry.get("episodeId", "")
+                  d     = entry.get("date", "")
+                  s     = int(entry.get("streams", 0) or 0)
+                  st    = int(entry.get("starts",  0) or 0)
+                  if ep_id:
+                      ep_streams.setdefault(ep_id, {"streams": 0, "starts": 0})
+                      ep_streams[ep_id]["streams"] += s
+                      ep_streams[ep_id]["starts"]  += st
+                  if d:
+                      daily_dict.setdefault(d, {"streams": 0, "starts": 0})
+                      daily_dict[d]["streams"] += s
+                      daily_dict[d]["starts"]  += st
+          else:
+              print(f"detailedStreamingActivity: {r.status_code}")
+
+          # Fallback por episódio
+          if not ep_streams and episodes_raw:
+              for ep in episodes_raw:
+                  ep_id = ep.get("id", "")
+                  if not ep_id: continue
+                  r2 = requests.get(
+                      f"{BASE}/shows/{SPOTIFY_SHOW_ID}/episodes/{ep_id}/streamingActivity",
+                      headers=sp_headers,
+                      params={"start": period_start, "end": period_end},
+                      timeout=15
+                  )
+                  if r2.ok:
+                      act = r2.json().get("activityPeriod", [])
+                      ep_streams[ep_id] = {
+                          "streams": sum(int(x.get("streams", 0) or 0) for x in act),
+                          "starts":  sum(int(x.get("starts",  0) or 0) for x in act)
+                      }
+                      for x in act:
+                          dk = x.get("date", "")
+                          if dk:
+                              daily_dict.setdefault(dk, {"streams": 0, "starts": 0})
+                              daily_dict[dk]["streams"] += int(x.get("streams", 0) or 0)
+                              daily_dict[dk]["starts"]  += int(x.get("starts",  0) or 0)
+
+          now_iso = datetime.now().isoformat()
+          episodes = []
+          for ep in episodes_raw:
+              ep_id  = ep.get("id", "")
+              ep_agg = ep_streams.get(ep_id, {"streams": 0, "starts": 0})
+              pub    = ep.get("publishDate") or ep.get("releaseDate") or ""
+              episodes.append({
+                  "id":           ep_id,
+                  "name":         ep.get("name", ""),
+                  "published_at": pub[:10] if pub else "",
+                  "duration_ms":  ep.get("duration") or ep.get("durationMs") or 0,
+                  "streams":      ep_agg["streams"],
+                  "starts":       ep_agg["starts"],
+                  "url":          f"https://open.spotify.com/episode/{ep_id}",
+                  "description":  ep.get("description", "")[:300],
+                  "collected_at": now_iso
+              })
+          episodes.sort(key=lambda x: x["streams"], reverse=True)
+
+          daily = [
+              {"date": d, "streams": v["streams"], "starts": v["starts"], "collected_at": now_iso}
+              for d, v in sorted(daily_dict.items())
+          ]
+          streams_period = sum(v["streams"] for v in daily_dict.values())
+
+          spotify_data = {
+              "period":   {"start": period_start, "end": period_end},
+              "summary":  {"followers": followers, "total_episodes": len(episodes), "streams_period": streams_period},
+              "daily":    daily,
+              "episodes": episodes
+          }
+
+          import pathlib
+          out = pathlib.Path("public/data/spotify.json")
+          out.parent.mkdir(parents=True, exist_ok=True)
+          out.write_text(json.dumps(spotify_data, indent=2, ensure_ascii=False))
+          print(f"✅ {len(episodes)} episódios | {streams_period} streams")
+          EOF
+
+      - name: Commit e push
+        run: |
+          git config user.email "github-actions@github.com"
+          git config user.name "GitHub Actions"
+          git add public/data/spotify.json
+          git diff --cached --quiet || git commit -m "chore: update spotify $(date +%Y-%m-%d)"
+          git push
