@@ -1,22 +1,12 @@
 {
   "period": {
-    "start": "2026-02-21",
-    "end": "2026-03-23"
+    "start": "2026-02-22",
+    "end": "2026-03-24"
   },
   "summary": {
-    "subscribers": 847,
-    "total_videos": 97,
-    "views_total": 2439195
+    "subscribers": 0,
+    "total_videos": 0,
+    "views_total": 0
   },
-  "videos": [
-    {
-      "id": "tjTHm31bTwo",
-      "title": "VOCÊ NÃO PRECISA SABER PROGRAMAR, PRECISA SABER PEDIR",
-      "url": "https://www.youtube.com/watch?v=tjTHm31bTwo",
-      "published_at": "2026-02-11T13:01:44Z",
-      "views": 512967,
-      "likes": 2310,
-      "comments": 7
-    }
-  ]
+  "videos": []
 }
